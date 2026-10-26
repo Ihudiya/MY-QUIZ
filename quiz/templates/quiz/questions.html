@@ -1,0 +1,356 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz_title }} | QuizMaster</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+
+    <style>
+        body.questions-page {
+            margin: 0;
+            background: #f7f8fc;
+            color: #182033;
+            font-family: Arial, sans-serif;
+        }
+
+        .quiz-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            background: white;
+            border-bottom: 1px solid #e8eaf0;
+        }
+
+        .quiz-navbar .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #182033;
+            text-decoration: none;
+        }
+
+        .quiz-navbar .logo span { color: #6654e8; }
+
+        .back-link {
+            color: #6654e8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .quiz-main {
+            max-width: 850px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 45px 0;
+        }
+
+        .quiz-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            color: #6654e8;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .quiz-heading h1 {
+            font-size: clamp(27px, 4vw, 38px);
+            margin: 14px 0;
+        }
+
+        .quiz-heading p {
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .quiz-meta span {
+            background: #eeebff;
+            color: #5946ce;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .score-panel {
+            background: #eeebff;
+            border: 1px solid #dcd5ff;
+            border-radius: 14px;
+            text-align: center;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .score-panel h2 {
+            color: #5946ce;
+            font-size: 28px;
+            margin: 0 0 8px;
+        }
+
+        .score-panel p {
+            margin: 0;
+            color: #5140cb;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid #e6e8ef;
+            border-radius: 14px;
+            padding: 24px;
+            margin: 20px 0;
+            min-width: 0;
+        }
+
+        .question-card legend {
+            width: 100%;
+            padding: 0;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            margin-right: 8px;
+            border-radius: 9px;
+            background: #eeebff;
+            color: #6654e8;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .question-text { vertical-align: middle; }
+
+        .answer-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid #e6e8ef;
+            border-radius: 10px;
+            cursor: pointer;
+            line-height: 1.6;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .answer-option:hover {
+            border-color: #8a7bff;
+            background: #faf9ff;
+        }
+
+        .answer-option input {
+            margin-top: 5px;
+            accent-color: #6654e8;
+            flex-shrink: 0;
+        }
+
+        .answer-option:has(input:checked) {
+            border-color: #6654e8;
+            background: #f4f1ff;
+        }
+
+        .answer-option.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .answer-option.wrong {
+            border-color: #dc2626;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .answer-feedback {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .submit-quiz, .next-round {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 28px;
+            background: #6654e8;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .submit-quiz:hover, .next-round:hover {
+            background: #5140cb;
+        }
+
+        .next-round { background: #15803d; }
+        .next-round:hover { background: #166534; }
+
+        .quiz-note {
+            text-align: center;
+            color: #667085;
+            margin-top: 24px;
+        }
+
+        .quiz-footer {
+            padding: 25px 7%;
+            background: white;
+            border-top: 1px solid #e8eaf0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media (max-width: 550px) {
+            .quiz-navbar { padding: 18px 5%; }
+            .question-card { padding: 18px; }
+            .quiz-footer { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body class="questions-page">
+
+    <nav class="navbar quiz-navbar">
+        <a href="{% url 'home' %}" class="logo">
+            Quiz<span>Master</span>.
+        </a>
+        <a href="{% url 'home' %}" class="back-link">← Home</a>
+    </nav>
+
+    <main class="quiz-main">
+
+        <header class="quiz-heading">
+            <span class="eyebrow">KNOWLEDGE CHALLENGE</span>
+            <h1>{{ quiz_title }}</h1>
+            <p>
+                Take your time, think carefully, and choose the best answer.
+            </p>
+
+            <div class="quiz-meta">
+                <span>{{ questions|length }} Questions</span>
+                <span>Multiple Choice</span>
+                {% if is_mixed %}
+                    <span>Mixed Challenge</span>
+                {% endif %}
+            </div>
+        </header>
+
+        {% if is_mixed and submitted %}
+            <section class="score-panel">
+                <h2>{{ score }}/{{ total }}</h2>
+                <p>You scored {{ percentage }}% in this round.</p>
+            </section>
+        {% endif %}
+
+        <form method="POST" action="{% url 'start_quiz' 'mixed' %}"class="quiz-form">
+            {% csrf_token %}
+
+            {% for item in questions %}
+                <fieldset class="question-card">
+                    <legend>
+                        <span class="question-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+                        <span class="question-text">{{ item.question }}</span>
+                    </legend>
+
+                    <div class="answer-options">
+                        {% for option in item.options %}
+                            <label class="answer-option
+                                {% if is_mixed and submitted %}
+                                    {% if option == item.answer %}correct{% endif %}
+                                    {% if option == item.selected and not item.correct %}wrong{% endif %}
+                                {% endif %}">
+
+                                <input
+                                    type="radio"
+                                    name="question_{{ forloop.parentloop.counter0 }}"
+                                    value="{{ option }}"
+                                    {% if item.selected == option and submitted %}checked{% endif %}
+                                    {% if submitted %}disabled{% else %}required{% endif %}
+                                >
+
+                                <span>
+                                    {{ option }}
+
+                                    {% if is_mixed and submitted and option == item.answer %}
+                                        <span class="answer-feedback">✓ Correct answer</span>
+                                    {% elif is_mixed and submitted and option == item.selected and not item.correct %}
+                                        <span class="answer-feedback">✗ Your answer</span>
+                                    {% endif %}
+                                </span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% empty %}
+                <p>No questions are available for this quiz yet.</p>
+            {% endfor %}
+
+            {% if questions and not submitted %}
+                <button type="submit" class="submit-quiz">
+                    Submit My Answers →
+                </button>
+            {% endif %}
+        </form>
+
+        {% if is_mixed and submitted %}
+            {% if has_more_questions %}
+                <form method="POST" action="{% url 'next_round' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="next-round">
+                        Next Round →
+                    </button>
+                </form>
+            {% else %}
+                <p class="quiz-note">
+                    🎉 You've completed all available Mixed Challenge questions!
+                </p>
+                <a href="{% url 'home' %}" class="next-round">
+                    Back to Home
+                </a>
+            {% endif %}
+        {% endif %}
+
+        <p class="quiz-note">You've got this. Give it your best!</p>
+
+    </main>
+
+    <footer class="site-footer quiz-footer">
+        <span>QuizMaster © 2026</span>
+        <span>Learn. Practise. Improve.</span>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster | Software Engineering Practice</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+    <style>
+        .topics-section {
+            max-width: 1100px;
+            width: 88%;
+            margin: 55px auto;
+        }
+
+        .topics-heading {
+            margin-bottom: 25px;
+        }
+
+        .topics-heading h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .topics-heading p {
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .mixed-challenge {
+            background: #211c48;
+            color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .mixed-challenge h2 {
+            margin-top: 10px;
+        }
+
+        .mixed-challenge p {
+            line-height: 1.7;
+            color: #dedaf4;
+        }
+
+        .mixed-challenge a {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #8170ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: white;
+            border: 1px solid #e6e8ef;
+            border-radius: 14px;
+            padding: 23px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px #18203312;
+        }
+
+        .topic-card h3 {
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        .topic-card p {
+            color: #667085;
+            font-size: 14px;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .topic-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            background: #f0edff;
+            color: #6654e8;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+        }
+
+        .topic-card a {
+            color: #6654e8;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 12px;
+        }
+
+        .topic-card a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 800px) {
+            .topic-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .topic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="home-page">
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">
+            Quiz<span>Master</span>.
+        </a>
+        <span class="nav-label">Learn. Practice. Improve.</span>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-content">
+            <span class="eyebrow">YOUR KNOWLEDGE, YOUR CHALLENGE</span>
+
+            <h1>
+                Think smarter.<br>
+                <span>Test yourself.</span>
+            </h1>
+
+            <p class="hero-description">
+                Build your software engineering knowledge through
+                focused quizzes, practise important concepts, and
+                learn something new with every challenge.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{% url 'start_quiz' 'mixed' %}" class="primary-button">
+                    Start Mixed Challenge <span aria-hidden="true">→</span>
+                </a>
+            </div>
+
+            <div class="feature-row">
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Practise by topic</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">★</span>
+                    <span>Check your score</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="visual-top">
+                    <span class="live-dot"></span>
+                    <span>YOUR NEXT CHALLENGE</span>
+                </div>
+
+                <div class="visual-icon">✦</div>
+                <p class="visual-kicker">SOFTWARE ENGINEERING</p>
+                <h2>Ready to test what you know?</h2>
+                <p class="visual-description">
+                    Every question is an opportunity to improve.
+                </p>
+
+                <div class="visual-bottom">
+                    <span>Think carefully.</span>
+                    <span class="arrow-circle">↗</span>
+                </div>
+            </div>
+            <div class="decorative-circle"></div>
+        </div>
+    </main>
+
+    <section class="topics-section">
+        <div class="mixed-challenge">
+            <span class="eyebrow">ALL TOPICS · ONE CHALLENGE</span>
+            <h2>Mixed Challenge — All Topics</h2>
+            <p>
+                Mix questions from different areas of software engineering
+                and find out how much you know.
+            </p>
+            <a href="{% url 'start_quiz' 'mixed' %}">
+                Take the Challenge →
+            </a>
+        </div>
+
+        <div class="topics-heading">
+            <h2>Explore Topics</h2>
+            <p>Choose a subject and focus on one area at a time.</p>
+        </div>
+
+        <div class="topic-grid">
+            {% for slug, topic in topics.items %}
+                <article class="topic-card">
+                    <div class="topic-icon">
+                        {% if slug == "software_architecture" %}◇
+                        {% elif slug == "software_testing" %}✓
+                        {% elif slug == "data_structures" %}⌘
+                        {% elif slug == "requirements_analysis" %}≡
+                        {% elif slug == "programming_oop" %}&lt;/&gt;
+                        {% elif slug == "databases" %}▤
+                        {% elif slug == "development_process" %}↻
+                        {% elif slug == "uml_modelling" %}▧
+                        {% elif slug == "git_github" %}⑂
+                        {% else %}◎
+                        {% endif %}
+                    </div>
+
+                    <h3>{{ topic.name }}</h3>
+                    <p>{{ topic.description }}</p>
+
+                    <a href="{% url 'start_quiz' slug %}">
+                        Start Quiz →
+                    </a>
+                </article>
+            {% empty %}
+                <p>No topics are available yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <span>QuizMaster © 2026</span>
+        <span>Built for curious minds.</span>
+    </footer>
+
+</body>
+</html>

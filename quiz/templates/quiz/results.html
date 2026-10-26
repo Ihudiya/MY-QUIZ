@@ -1,0 +1,311 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results | QuizMaster</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f7f8fc;
+            color: #182033;
+            font-family: Arial, sans-serif;
+        }
+
+        .results-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            background: white;
+            border-bottom: 1px solid #e8eaf0;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #182033;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #6654e8;
+        }
+
+        .home-link {
+            color: #6654e8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .results-container {
+            width: 90%;
+            max-width: 850px;
+            margin: 45px auto;
+        }
+
+        .score-card {
+            background: white;
+            border: 1px solid #e6e8ef;
+            border-radius: 18px;
+            padding: 38px 25px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(24, 32, 51, 0.04);
+        }
+
+        .result-icon {
+            width: 65px;
+            height: 65px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #eeebff;
+            color: #6654e8;
+            font-size: 30px;
+        }
+
+        .eyebrow {
+            color: #6654e8;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .score-card h1 {
+            margin: 12px 0;
+            font-size: clamp(26px, 4vw, 36px);
+        }
+
+        .subtitle {
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .score {
+            margin: 25px 0 8px;
+            font-size: 48px;
+            font-weight: 800;
+            color: #6654e8;
+        }
+
+        .score small {
+            font-size: 22px;
+            color: #98a2b3;
+        }
+
+        .percentage {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: #eeebff;
+            color: #5946ce;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 22px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #6654e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5140cb;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #344054;
+            border: 1px solid #d0d5dd;
+        }
+
+        .review-heading {
+            margin: 40px 0 18px;
+            font-size: 22px;
+        }
+
+        .review-card {
+            background: white;
+            border: 1px solid #e6e8ef;
+            border-radius: 13px;
+            padding: 22px;
+            margin-bottom: 15px;
+        }
+
+        .review-card h3 {
+            margin: 0 0 18px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .answer-box {
+            padding: 13px 15px;
+            border-radius: 9px;
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .answer-box p {
+            margin: 0;
+        }
+
+        .answer-correct {
+            background: #ecfdf3;
+            border: 1px solid #abefc6;
+            color: #067647;
+        }
+
+        .answer-incorrect {
+            background: #fef3f2;
+            border: 1px solid #fecdca;
+            color: #b42318;
+        }
+
+        .correct-answer {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .results-footer {
+            padding: 25px 7%;
+            background: white;
+            border-top: 1px solid #e8eaf0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media (max-width: 550px) {
+            .results-navbar {
+                padding: 18px 5%;
+            }
+
+            .score-card {
+                padding: 30px 18px;
+            }
+
+            .review-card {
+                padding: 17px;
+            }
+
+            .results-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="results-navbar">
+        <a href="{% url 'home' %}" class="logo">
+            Quiz<span>Master</span>.
+        </a>
+        <a href="{% url 'home' %}" class="home-link">← Home</a>
+    </nav>
+
+    <main class="results-container">
+
+        <section class="score-card">
+            <div class="result-icon">✓</div>
+
+            <span class="eyebrow">QUIZ COMPLETED</span>
+
+            <h1>
+                {% if percentage >= 80 %}
+                    Excellent work!
+                {% elif percentage >= 50 %}
+                    Good effort!
+                {% else %}
+                    Keep practising!
+                {% endif %}
+            </h1>
+
+            <p class="subtitle">
+                You've completed {{ quiz_title }}.
+                Here's how you performed.
+            </p>
+
+            <div class="score">
+                {{ score }}<small> / {{ total }}</small>
+            </div>
+
+            <p class="subtitle">Your final score</p>
+
+            <span class="percentage">{{ percentage }}% Score</span>
+
+            <div class="result-actions">
+                <a href="{% url 'home' %}" class="btn btn-primary">
+                    Try Another Quiz →
+                </a>
+
+                <a href="{% url 'home' %}" class="btn btn-secondary">
+                    Back to Home
+                </a>
+            </div>
+        </section>
+
+        <h2 class="review-heading">Answer Review</h2>
+
+        {% for item in results %}
+            <section class="review-card">
+                <h3>
+                    <span style="color: #6654e8;">
+                        {{ forloop.counter|stringformat:"02d" }}.
+                    </span>
+                    {{ item.question }}
+                </h3>
+
+                {% if item.correct %}
+                    <div class="answer-box answer-correct">
+                        <p>✓ <strong>Your answer</strong></p>
+                        <p>{{ item.selected|default:"No answer" }}</p>
+                    </div>
+                {% else %}
+                    <div class="answer-box answer-incorrect">
+                        <p>✕ <strong>Your answer</strong></p>
+                        <p>{{ item.selected|default:"No answer" }}</p>
+                    </div>
+
+                    <div class="answer-box correct-answer">
+                        <p><strong>Correct answer</strong></p>
+                        <p>{{ item.answer }}</p>
+                    </div>
+                {% endif %}
+            </section>
+        {% endfor %}
+
+    </main>
+
+    <footer class="results-footer">
+        <span>QuizMaster © 2026</span>
+        <span>Learn. Practise. Improve.</span>
+    </footer>
+</body>
+</html>
